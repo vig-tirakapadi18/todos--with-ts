@@ -1,10 +1,11 @@
-import { useRef, type FormEvent } from "react";
+import { useRef, type FormEvent, useState } from "react";
 
 interface INewGoalProps {
   onAddTodo: (title: string, summary: string) => void;
 }
 
 const NewTodo = ({ onAddTodo }: INewGoalProps) => {
+  const [isInvalidInput, setIsInvalidInput] = useState<boolean>(false);
   const todoTitleRef = useRef<HTMLInputElement>(null);
   const todoSummaryRef = useRef<HTMLInputElement>(null);
 
@@ -13,6 +14,11 @@ const NewTodo = ({ onAddTodo }: INewGoalProps) => {
 
     const inputTodoTitle = todoTitleRef.current!.value;
     const inputTodoSummary = todoSummaryRef.current!.value;
+
+    if (!inputTodoTitle || !inputTodoSummary) {
+      setIsInvalidInput(true);
+      return;
+    }
 
     event.currentTarget.reset();
     onAddTodo(inputTodoTitle, inputTodoSummary);
@@ -25,7 +31,7 @@ const NewTodo = ({ onAddTodo }: INewGoalProps) => {
         <input
           id="title"
           type="text"
-          className="block w-full rounded-sm bg-emerald-100 text-black px-2"
+          className="block w-full rounded-sm bg-emerald-100 text-black px-2 outline-none"
           ref={todoTitleRef}
         />
       </div>
@@ -34,7 +40,7 @@ const NewTodo = ({ onAddTodo }: INewGoalProps) => {
         <input
           id="summary"
           type="text"
-          className="block w-full rounded-sm bg-emerald-100 text-black px-2"
+          className="block w-full rounded-sm bg-emerald-100 text-black px-2 outline-none"
           ref={todoSummaryRef}
         />
       </div>
@@ -43,6 +49,11 @@ const NewTodo = ({ onAddTodo }: INewGoalProps) => {
           Add Todo
         </button>
       </div>
+      {isInvalidInput && (
+        <p className="mt-1 text-center text-rose-500">
+          Input fields must not be empty!
+        </p>
+      )}
     </form>
   );
 };
